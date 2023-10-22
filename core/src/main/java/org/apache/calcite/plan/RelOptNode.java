@@ -47,6 +47,7 @@ public interface RelOptNode {
    *
    * @return Digest string of this {@code RelNode}
    */
+  // digest -》 摘要 ? feynman.zhou
   String getDigest();
 
   /**

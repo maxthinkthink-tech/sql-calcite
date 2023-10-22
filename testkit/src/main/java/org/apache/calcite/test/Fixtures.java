@@ -22,6 +22,7 @@ import org.apache.calcite.sql.test.SqlOperatorFixture;
 
 /** Fluent test fixtures for typical Calcite tests (parser, validator,
  * sql-to-rel and rel-rules) that can easily be used in dependent projects. */
+// Fixtures feynman.zhou
 public class Fixtures {
   private Fixtures() {}
 

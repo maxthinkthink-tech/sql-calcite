@@ -115,6 +115,7 @@ import java.util.function.UnaryOperator;
  * {@link #getOrderScope} and {@link #getJoinScope} get the correct scope
  * to resolve
  * names in a particular clause of a SQL statement.
+ *
  */
 @Value.Enclosing
 public interface SqlValidator {

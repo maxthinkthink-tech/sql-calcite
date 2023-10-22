@@ -63,21 +63,22 @@ import static java.util.Objects.requireNonNull;
 /**
  * As {@link SqlTestFactory} but has no state, and therefore
  * configuration is passed to each method.
-*/
+ */
 public class SqlTestFactory {
-  public static final SqlTestFactory INSTANCE =
-      new SqlTestFactory(MockCatalogReaderSimple::create,
-          SqlTestFactory::createTypeFactory, MockRelOptPlanner::new,
-          Contexts.of(), UnaryOperator.identity(),
-          SqlValidatorUtil::newValidator,
-          ConnectionFactories.empty()
-              .with(ConnectionFactories.add(CalciteAssert.SchemaSpec.HR)),
-          SqlParser.Config.DEFAULT,
-          SqlValidator.Config.DEFAULT,
-          SqlToRelConverter.CONFIG,
-          SqlStdOperatorTable.instance(),
-          UnaryOperator.identity())
-      .withOperatorTable(o -> MockSqlOperatorTable.of(o).extend());
+  public static final SqlTestFactory INSTANCE = new SqlTestFactory(
+      MockCatalogReaderSimple::create,
+      SqlTestFactory::createTypeFactory,
+      MockRelOptPlanner::new,
+      Contexts.of(),
+      UnaryOperator.identity(),
+      SqlValidatorUtil::newValidator,
+      ConnectionFactories.empty().with(ConnectionFactories.add(CalciteAssert.SchemaSpec.HR)),
+      SqlParser.Config.DEFAULT,
+      SqlValidator.Config.DEFAULT,
+      SqlToRelConverter.CONFIG,
+      SqlStdOperatorTable.instance(),
+      UnaryOperator.identity()).withOperatorTable(o -> MockSqlOperatorTable.of(o).extend()
+  );
 
   public final ConnectionFactory connectionFactory;
   public final TypeFactoryFactory typeFactoryFactory;
@@ -103,6 +104,8 @@ public class SqlTestFactory {
       SqlParser.Config parserConfig, SqlValidator.Config validatorConfig,
       SqlToRelConverter.Config sqlToRelConfig, SqlOperatorTable operatorTable,
       UnaryOperator<RelDataTypeSystem> typeSystemTransform) {
+    CatalogReaderFactory factory = MockCatalogReaderSimple::create;
+
     this.catalogReaderFactory =
         requireNonNull(catalogReaderFactory, "catalogReaderFactory");
     this.typeFactoryFactory =
@@ -128,13 +131,17 @@ public class SqlTestFactory {
     this.validatorConfig = validatorConfig;
   }
 
-  /** Creates a parser. */
+  /**
+   * Creates a parser.
+   */
   public SqlParser createParser(String sql) {
     SqlParser.Config parserConfig = parserConfig();
     return SqlParser.create(new SourceStringReader(sql), parserConfig);
   }
 
-  /** Creates a validator. */
+  /**
+   * Creates a validator.
+   */
   public SqlValidator createValidator() {
     return validatorFactory.create(operatorTable, catalogReaderSupplier.get(),
         typeFactorySupplier.get(), validatorConfig);
@@ -253,7 +260,8 @@ public class SqlTestFactory {
       RelDataTypeSystem typeSystem) {
     if (conformance.shouldConvertRaggedUnionTypesToVarying()) {
       typeSystem = new DelegatingTypeSystem(typeSystem) {
-        @Override public boolean shouldConvertRaggedUnionTypesToVarying() {
+        @Override
+        public boolean shouldConvertRaggedUnionTypesToVarying() {
           return true;
         }
       };
@@ -323,18 +331,24 @@ public class SqlTestFactory {
         StandardConvertletTable.INSTANCE, sqlToRelConfig);
   }
 
-  /** Creates a {@link RelDataTypeFactory} for tests. */
+  /**
+   * Creates a {@link RelDataTypeFactory} for tests.
+   */
   public interface TypeFactoryFactory {
     RelDataTypeFactory create(SqlConformance conformance,
         RelDataTypeSystem typeSystem);
   }
 
-  /** Creates a {@link RelOptPlanner} for tests. */
+  /**
+   * Creates a {@link RelOptPlanner} for tests.
+   */
   public interface PlannerFactory {
     RelOptPlanner create(Context context);
   }
 
-  /** Creates {@link SqlValidator} for tests. */
+  /**
+   * Creates {@link SqlValidator} for tests.
+   */
   public interface ValidatorFactory {
     SqlValidator create(
         SqlOperatorTable opTab,
@@ -343,14 +357,18 @@ public class SqlTestFactory {
         SqlValidator.Config config);
   }
 
-  /** Creates a {@link SqlValidatorCatalogReader} for tests. */
+  /**
+   * Creates a {@link SqlValidatorCatalogReader} for tests.
+   */
   @FunctionalInterface
   public interface CatalogReaderFactory {
     SqlValidatorCatalogReader create(RelDataTypeFactory typeFactory,
         boolean caseSensitive);
   }
 
-  /** Implementation for {@link RelOptTable.ViewExpander} for testing. */
+  /**
+   * Implementation for {@link RelOptTable.ViewExpander} for testing.
+   */
   private static class MockViewExpander implements RelOptTable.ViewExpander {
     private final SqlValidator validator;
     private final Prepare.CatalogReader catalogReader;
@@ -366,7 +384,8 @@ public class SqlTestFactory {
       this.config = config;
     }
 
-    @Override public RelRoot expandView(RelDataType rowType, String queryString,
+    @Override
+    public RelRoot expandView(RelDataType rowType, String queryString,
         List<String> schemaPath, @Nullable List<String> viewPath) {
       try {
         SqlNode parsedNode = SqlParser.create(queryString).parseStmt();

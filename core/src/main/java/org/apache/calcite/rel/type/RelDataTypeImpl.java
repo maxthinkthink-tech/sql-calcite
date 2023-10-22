@@ -59,6 +59,7 @@ public abstract class RelDataTypeImpl
 
   //~ Instance fields --------------------------------------------------------
 
+  // an ordered list of operator attributes feynman.zhou
   protected final @Nullable List<RelDataTypeField> fieldList;
   protected @Nullable String digest;
 

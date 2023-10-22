@@ -24,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Reusable {@link RelDataType} fixtures for tests.
  */
+// type  feynman.zhou
 class SqlTypeFixture {
   final SqlTypeFactoryImpl typeFactory =
       new SqlTypeFactoryImpl(RelDataTypeSystem.DEFAULT);

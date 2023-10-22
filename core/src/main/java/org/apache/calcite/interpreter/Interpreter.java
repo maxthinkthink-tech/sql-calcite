@@ -82,8 +82,7 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
   public Interpreter(DataContext dataContext, RelNode rootRel) {
     this.dataContext = requireNonNull(dataContext, "dataContext");
     final RelNode rel = optimize(rootRel);
-    final CompilerImpl compiler =
-        new Nodes.CoreCompiler(this, rootRel.getCluster());
+    final CompilerImpl compiler = new Nodes.CoreCompiler(this, rootRel.getCluster());
     @SuppressWarnings("method.invocation.invalid")
     Pair<RelNode, Map<RelNode, NodeInfo>> pair = compiler.visitRoot(rel);
     this.rootRel = pair.left;
@@ -284,11 +283,9 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
    * "visit" methods in this or a sub-class, and they will be found and called
    * via reflection.
    */
-  static class CompilerImpl extends RelVisitor
-      implements Compiler, ReflectiveVisitor {
+  static class CompilerImpl extends RelVisitor implements Compiler, ReflectiveVisitor {
     final ScalarCompiler scalarCompiler;
-    private final ReflectiveVisitDispatcher<CompilerImpl, RelNode> dispatcher =
-        ReflectUtil.createDispatcher(CompilerImpl.class, RelNode.class);
+    private final ReflectiveVisitDispatcher<CompilerImpl, RelNode> dispatcher = ReflectUtil.createDispatcher(CompilerImpl.class, RelNode.class);
     @NotOnlyInitialized
     protected final Interpreter interpreter;
     protected @Nullable RelNode rootRel;
@@ -318,8 +315,7 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
         rel = null;
         boolean found = dispatcher.invokeVisitor(this, p, REWRITE_METHOD_NAME);
         if (!found) {
-          throw new AssertionError(
-              "interpreter: no implementation for rewrite");
+          throw new AssertionError("interpreter: no implementation for rewrite");
         }
         if (rel == null) {
           break;
@@ -327,6 +323,7 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
         if (CalciteSystemProperty.DEBUG.value()) {
           System.out.println("Interpreter: rewrite " + p + " to " + rel);
         }
+
         p = requireNonNull(rel, "rel");
         if (parent != null) {
           List<RelNode> inputs = relInputs.get(parent);
@@ -335,6 +332,7 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
             relInputs.put(parent, inputs);
           }
           inputs.set(ordinal, p);
+
         } else {
           rootRel = p;
         }
@@ -343,13 +341,13 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
       // rewrite children first (from left to right)
       final List<RelNode> inputs = relInputs.get(p);
       RelNode finalP = p;
-      Ord.forEach(Util.first(inputs, p.getInputs()),
-          (r, i) -> outEdges.put(r, new Edge(finalP, i)));
+      Ord.forEach(Util.first(inputs, p.getInputs()), (r, i) -> outEdges.put(r, new Edge(finalP, i)));
       if (inputs != null) {
         for (int i = 0; i < inputs.size(); i++) {
           RelNode input = inputs.get(i);
           visit(input, i, p);
         }
+
       } else {
         p.childrenAccept(this);
       }
@@ -361,8 +359,7 @@ public class Interpreter extends AbstractEnumerable<@Nullable Object[]>
           InterpretableRel interpretableRel = (InterpretableRel) p;
           node =
               interpretableRel.implement(
-                  new InterpretableRel.InterpreterImplementor(this, null,
-                      DataContexts.EMPTY));
+                  new InterpretableRel.InterpreterImplementor(this, null, DataContexts.EMPTY));
         } else {
           // Probably need to add a visit(XxxRel) method to CoreCompiler.
           throw new AssertionError("interpreter: no implementation for "

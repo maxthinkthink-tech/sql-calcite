@@ -68,12 +68,12 @@ public interface RelMetadataProvider {
    *     provider cannot supply metadata of this type
    */
   @Deprecated // to be removed before 2.0
-  <@Nullable M extends @Nullable Metadata> @Nullable UnboundMetadata<M> apply(
-      Class<? extends RelNode> relClass, Class<? extends M> metadataClass);
+  <@Nullable M extends @Nullable Metadata>
+  @Nullable UnboundMetadata<M> apply(Class<? extends RelNode> relClass, Class<? extends M> metadataClass);
 
   @Deprecated // to be removed before 2.0
-  <M extends Metadata> Multimap<Method, MetadataHandler<M>> handlers(
-      MetadataDef<M> def);
+  <M extends Metadata>
+  Multimap<Method, MetadataHandler<M>> handlers(MetadataDef<M> def);
 
   /**
    * Retrieves a list of {@link MetadataHandler} for implements a particular

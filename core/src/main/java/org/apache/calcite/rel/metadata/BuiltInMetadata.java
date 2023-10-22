@@ -45,9 +45,7 @@ public abstract class BuiltInMetadata {
 
   /** Metadata about the selectivity of a predicate. */
   public interface Selectivity extends Metadata {
-    MetadataDef<Selectivity> DEF =
-        MetadataDef.of(Selectivity.class, Selectivity.Handler.class,
-            BuiltInMethod.SELECTIVITY.method);
+    MetadataDef<Selectivity> DEF = MetadataDef.of(Selectivity.class, Selectivity.Handler.class, BuiltInMethod.SELECTIVITY.method);
 
     /**
      * Estimates the percentage of an expression's output rows which satisfy a
@@ -238,9 +236,7 @@ public abstract class BuiltInMetadata {
 
   /** Metadata about the number of rows returned by a relational expression. */
   public interface RowCount extends Metadata {
-    MetadataDef<RowCount> DEF =
-        MetadataDef.of(RowCount.class, RowCount.Handler.class,
-            BuiltInMethod.ROW_COUNT.method);
+    MetadataDef<RowCount> DEF = MetadataDef.of(RowCount.class, RowCount.Handler.class, BuiltInMethod.ROW_COUNT.method);
 
     /**
      * Estimates the number of rows which will be returned by a relational

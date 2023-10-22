@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 /**
  * Check the output of {@link RuleMatchVisualizer}.
+ * cc
  */
 class RuleMatchVisualizerTest extends RelOptTestBase {
 
@@ -57,6 +58,7 @@ class RuleMatchVisualizerTest extends RelOptTestBase {
     return fixture;
   }
 
+ // hep planner feynman.zhou
   @Test void testHepPlanner() {
     final String sql = "select a.name from dept a\n"
         + "union all\n"

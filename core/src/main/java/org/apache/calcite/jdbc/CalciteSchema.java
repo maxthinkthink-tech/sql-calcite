@@ -288,6 +288,7 @@ public abstract class CalciteSchema {
   }
 
   public SchemaPlus plus() {
+    // create schema plus feynman.zhou
     return new SchemaPlusImpl();
   }
 

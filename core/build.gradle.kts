@@ -56,6 +56,7 @@ dependencies {
     api("org.apiguardian:apiguardian-api")
     api("org.checkerframework:checker-qual")
     api("org.slf4j:slf4j-api")
+    api("mysql:mysql-connector-java")
 
     implementation("com.fasterxml.jackson.core:jackson-core")
     implementation("com.fasterxml.jackson.core:jackson-databind")

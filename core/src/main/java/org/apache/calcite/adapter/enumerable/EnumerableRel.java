@@ -31,8 +31,7 @@ import java.util.List;
  * {@link org.apache.calcite.adapter.enumerable.EnumerableConvention} calling
  * conventions.
  */
-public interface EnumerableRel
-    extends PhysicalNode {
+public interface EnumerableRel extends PhysicalNode {
 
   //~ Methods ----------------------------------------------------------------
 
@@ -50,6 +49,7 @@ public interface EnumerableRel
     return DeriveMode.LEFT_FIRST;
   }
 
+  // dcg: implement feynman.zhou
   /**
    * Creates a plan for this expression according to a calling convention.
    *
@@ -103,6 +103,7 @@ public interface EnumerableRel
     }
   }
 
+  // dcg: generating Java Code feynman.zhou
   /** Result of implementing an enumerable relational expression by generating
    * Java code. */
   class Result {

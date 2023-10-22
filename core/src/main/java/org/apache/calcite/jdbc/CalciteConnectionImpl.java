@@ -148,6 +148,7 @@ abstract class CalciteConnectionImpl
     this.rootSchema =
         requireNonNull(rootSchema != null
             ? rootSchema
+            // create root schema feynman.zhou
             : CalciteSchema.createRootSchema(true));
     checkArgument(this.rootSchema.isRoot(), "must be root schema");
     this.properties.put(InternalProperty.CASE_SENSITIVE, cfg.caseSensitive());
@@ -283,8 +284,7 @@ abstract class CalciteConnectionImpl
   @Override public <T> Enumerator<T> executeQuery(Queryable<T> queryable) {
     try {
       CalciteStatement statement = (CalciteStatement) createStatement();
-      CalcitePrepare.CalciteSignature<T> signature =
-          statement.prepare(queryable);
+      CalcitePrepare.CalciteSignature<T> signature = statement.prepare(queryable);
       return enumerable(statement.handle, signature, null).enumerator();
     } catch (SQLException e) {
       throw new RuntimeException(e);

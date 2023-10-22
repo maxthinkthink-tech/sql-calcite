@@ -1446,8 +1446,7 @@ public abstract class Expressions {
    * Creates a BinaryExpression, given the left and right operands,
    * by calling an appropriate factory method.
    */
-  public static BinaryExpression makeBinary(ExpressionType binaryType,
-      Expression left, Expression right) {
+  public static BinaryExpression makeBinary(ExpressionType binaryType, Expression left, Expression right) {
     final Type type;
     switch (binaryType) {
     case Equal:

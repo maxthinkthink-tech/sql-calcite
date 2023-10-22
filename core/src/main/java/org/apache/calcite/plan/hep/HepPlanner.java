@@ -390,6 +390,7 @@ public class HepPlanner extends AbstractRelOptPlanner {
     return nMatches;
   }
 
+  // apply rules feynman.zhou
   private void applyRules(HepProgram.State programState,
       Collection<RelOptRule> rules, boolean forceConversions) {
     final HepInstruction.EndGroup.State group = programState.group;

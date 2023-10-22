@@ -80,6 +80,7 @@ public interface RelDataTypeField extends Map.Entry<String, RelDataType> {
    *
    * @return field type
    */
+  // RelDataType feynman.zhou
   RelDataType getType();
 
   /**

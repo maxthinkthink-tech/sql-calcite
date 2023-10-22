@@ -43,6 +43,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Parameters for a SQL-to-RelNode test.
  */
+// SQL to RelNode feynman.zhou
 public class SqlToRelFixture {
   public static final SqlTester TESTER = SqlValidatorTester.DEFAULT;
 

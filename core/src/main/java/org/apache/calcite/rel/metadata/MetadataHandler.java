@@ -44,10 +44,8 @@ public interface MetadataHandler<M extends Metadata> {
    * @param handlerClass the handler class to inspect
    * @return handler methods
    */
-  static SortedMap<String, Method> handlerMethods(
-      Class<? extends MetadataHandler<?>> handlerClass) {
-    final ImmutableSortedMap.Builder<String, Method> map =
-        ImmutableSortedMap.naturalOrder();
+  static SortedMap<String, Method> handlerMethods(Class<? extends MetadataHandler<?>> handlerClass) {
+    final ImmutableSortedMap.Builder<String, Method> map = ImmutableSortedMap.naturalOrder();
     Arrays.stream(handlerClass.getDeclaredMethods())
         .filter(m -> !m.getName().equals("getDef"))
         .filter(m -> !m.isSynthetic())

@@ -41,16 +41,14 @@ public class MetadataDef<M extends Metadata> {
   public final Class<? extends MetadataHandler<M>> handlerClass;
   public final ImmutableList<Method> methods;
 
-  private MetadataDef(Class<M> metadataClass,
-      Class<? extends MetadataHandler<M>> handlerClass, Method... methods) {
+  private MetadataDef(Class<M> metadataClass, Class<? extends MetadataHandler<M>> handlerClass, Method... methods) {
     this.metadataClass = metadataClass;
     this.handlerClass = handlerClass;
     this.methods =
         Arrays.stream(methods)
             .sorted(Comparator.comparing(Method::getName))
             .collect(toImmutableList());
-    final SortedMap<String, Method> handlerMethods =
-        MetadataHandler.handlerMethods(handlerClass);
+    final SortedMap<String, Method> handlerMethods = MetadataHandler.handlerMethods(handlerClass);
 
     // Handler must have the same methods as Metadata, each method having
     // additional "subclass-of-RelNode, RelMetadataQuery" parameters.
@@ -78,8 +76,8 @@ public class MetadataDef<M extends Metadata> {
   }
 
   /** Creates a {@link org.apache.calcite.rel.metadata.MetadataDef}. */
-  public static <M extends Metadata> MetadataDef<M> of(Class<M> metadataClass,
-      Class<? extends MetadataHandler<M>> handlerClass, Method... methods) {
+  public static <M extends Metadata>
+  MetadataDef<M> of(Class<M> metadataClass, Class<? extends MetadataHandler<M>> handlerClass, Method... methods) {
     return new MetadataDef<>(metadataClass, handlerClass, methods);
   }
 }

@@ -61,17 +61,20 @@ public class CsvTableScan extends TableScan implements EnumerableRel {
     assert csvTable != null;
   }
 
-  @Override public RelNode copy(RelTraitSet traitSet, List<RelNode> inputs) {
+  @Override
+  public RelNode copy(RelTraitSet traitSet, List<RelNode> inputs) {
     assert inputs.isEmpty();
     return new CsvTableScan(getCluster(), table, csvTable, fields);
   }
 
-  @Override public RelWriter explainTerms(RelWriter pw) {
+  @Override
+  public RelWriter explainTerms(RelWriter pw) {
     return super.explainTerms(pw)
         .item("fields", Primitive.asList(fields));
   }
 
-  @Override public RelDataType deriveRowType() {
+  @Override
+  public RelDataType deriveRowType() {
     final List<RelDataTypeField> fieldList = table.getRowType().getFieldList();
     final RelDataTypeFactory.Builder builder =
         getCluster().getTypeFactory().builder();
@@ -81,11 +84,13 @@ public class CsvTableScan extends TableScan implements EnumerableRel {
     return builder.build();
   }
 
-  @Override public void register(RelOptPlanner planner) {
+  @Override
+  public void register(RelOptPlanner planner) {
     planner.addRule(CsvRules.PROJECT_SCAN);
   }
 
-  @Override public @Nullable RelOptCost computeSelfCost(RelOptPlanner planner,
+  @Override
+  public @Nullable RelOptCost computeSelfCost(RelOptPlanner planner,
       RelMetadataQuery mq) {
     // Multiply the cost by a factor that makes a scan more attractive if it
     // has significantly fewer fields than the original scan.
@@ -99,18 +104,17 @@ public class CsvTableScan extends TableScan implements EnumerableRel {
             / ((double) table.getRowType().getFieldCount() + 2D));
   }
 
-  @Override public Result implement(EnumerableRelImplementor implementor, Prefer pref) {
-    PhysType physType =
-        PhysTypeImpl.of(
-            implementor.getTypeFactory(),
-            getRowType(),
-            pref.preferArray());
+  @Override
+  public Result implement(EnumerableRelImplementor implementor, Prefer pref) {
+    PhysType physType = PhysTypeImpl.of(implementor.getTypeFactory(), getRowType(), pref.preferArray());
 
-    return implementor.result(
-        physType,
+    return implementor.result(physType,
         Blocks.toBlock(
             Expressions.call(table.getExpression(CsvTranslatableTable.class),
-                "project", implementor.getRootExpression(),
-                Expressions.constant(fields))));
+                "project",
+                implementor.getRootExpression(),
+                Expressions.constant(fields))
+        )
+    );
   }
 }

@@ -52,6 +52,7 @@ public abstract class CalciteFactory implements AvaticaFactory {
       AvaticaFactory factory,
       String url,
       Properties info) {
+    // root schema is null feynman.zhou
     return newConnection(driver, factory, url, info, null, null);
   }
 

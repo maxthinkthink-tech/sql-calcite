@@ -32,8 +32,7 @@ import java.util.Iterator;
  *
  * @param <TSource> Element type
  */
-public abstract class BaseQueryable<TSource>
-    extends AbstractQueryable<TSource> {
+public abstract class BaseQueryable<TSource> extends AbstractQueryable<TSource> {
   protected final QueryProvider provider;
   protected final Type elementType;
   protected final @Nullable Expression expression;

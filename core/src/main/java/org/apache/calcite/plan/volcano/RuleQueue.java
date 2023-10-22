@@ -41,6 +41,7 @@ public abstract class RuleQueue {
    *
    * @param match rule match to add
    */
+  // 筛选出 Match Rule后，才会执行规则 feynman.zhou
   public abstract void addMatch(VolcanoRuleMatch match);
 
   /**

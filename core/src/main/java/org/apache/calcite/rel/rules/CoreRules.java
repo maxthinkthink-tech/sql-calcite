@@ -50,6 +50,7 @@ import org.apache.calcite.schema.impl.StarTable;
 /** Rules that perform logical transformations on relational expressions.
  *
  * @see MaterializedViewRules */
+// core rules feynman.zhou
 public class CoreRules {
 
   private CoreRules() {}

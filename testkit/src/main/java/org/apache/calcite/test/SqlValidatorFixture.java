@@ -74,6 +74,7 @@ import static java.util.Objects.requireNonNull;
  * (for example, the same SQL expression and parser configuration), it is safe
  * to use the same fixture object as a starting point for both tests.
  */
+// sql validator feynman.zhou
 public class SqlValidatorFixture {
   public final SqlTester tester;
   public final SqlTestFactory factory;

@@ -30,9 +30,7 @@ public class FilterNode extends AbstractSingleNode<Filter> {
 
   public FilterNode(Compiler compiler, Filter rel) {
     super(compiler, rel);
-    this.condition =
-        compiler.compile(ImmutableList.of(rel.getCondition()),
-            rel.getRowType());
+    this.condition = compiler.compile(ImmutableList.of(rel.getCondition()), rel.getRowType());
     this.context = compiler.createContext();
   }
 

@@ -775,6 +775,7 @@ class CsvTest {
     properties.setProperty("caseSensitive", "true");
     try (Connection connection =
         DriverManager.getConnection("jdbc:calcite:", properties)) {
+      // create calcite connection feynman.zhou
       final CalciteConnection calciteConnection =
           connection.unwrap(CalciteConnection.class);
 

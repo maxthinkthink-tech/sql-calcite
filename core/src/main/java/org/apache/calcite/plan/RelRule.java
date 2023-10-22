@@ -115,6 +115,7 @@ import java.util.function.Predicate;
  *
  * @param <C> Configuration type
  */
+// rules  feynman.zhou
 public abstract class RelRule<C extends RelRule.Config> extends RelOptRule {
   public final C config;
 

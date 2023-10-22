@@ -74,12 +74,14 @@ public class EnumerableInterpretable extends ConverterImpl
         cluster.traitSetOf(InterpretableConvention.INSTANCE), input);
   }
 
-  @Override public EnumerableInterpretable copy(RelTraitSet traitSet,
+  @Override
+  public EnumerableInterpretable copy(RelTraitSet traitSet,
       List<RelNode> inputs) {
     return new EnumerableInterpretable(getCluster(), sole(inputs));
   }
 
-  @Override public Node implement(final InterpreterImplementor implementor) {
+  @Override
+  public Node implement(final InterpreterImplementor implementor) {
     final Bindable bindable =
         toBindable(implementor.internalParameters, implementor.spark,
             (EnumerableRel) getInput(), EnumerableRel.Prefer.ARRAY);
@@ -102,13 +104,15 @@ public class EnumerableInterpretable extends ConverterImpl
           .maximumSize(CalciteSystemProperty.BINDABLE_CACHE_MAX_SIZE.value())
           .build();
 
+  // dcg: bindable feynman.zhou
   public static Bindable toBindable(Map<String, Object> parameters,
-      CalcitePrepare.@Nullable SparkHandler spark, EnumerableRel rel,
+      CalcitePrepare.@Nullable SparkHandler spark,
+      EnumerableRel rel,
       EnumerableRel.Prefer prefer) {
     EnumerableRelImplementor relImplementor =
-        new EnumerableRelImplementor(rel.getCluster().getRexBuilder(),
-            parameters);
+        new EnumerableRelImplementor(rel.getCluster().getRexBuilder(), parameters);
 
+    // dcg: class declaration feynman.zhou
     final ClassDeclaration expr = relImplementor.implementRoot(rel, prefer);
     String s = Expressions.toString(expr.memberDeclarations, "\n", false);
 
@@ -146,8 +150,8 @@ public class EnumerableInterpretable extends ConverterImpl
     compiler.setParentClassLoader(classLoader);
     final String s = "public final class " + expr.name + " implements "
         + (fieldCount == 1
-          ? Bindable.class.getCanonicalName() + ", " + Typed.class.getCanonicalName()
-          : ArrayBindable.class.getCanonicalName())
+        ? Bindable.class.getCanonicalName() + ", " + Typed.class.getCanonicalName()
+        : ArrayBindable.class.getCanonicalName())
         + " {\n"
         + classBody
         + "\n"
@@ -162,7 +166,7 @@ public class EnumerableInterpretable extends ConverterImpl
       StaticFieldDetector detector = new StaticFieldDetector();
       expr.accept(detector);
       if (!detector.containsStaticField) {
-        return BINDABLE_CACHE.get(classBody, () ->  compileToBindable(expr.name, s, compiler));
+        return BINDABLE_CACHE.get(classBody, () -> compileToBindable(expr.name, s, compiler));
       }
     }
     return compileToBindable(expr.name, s, compiler);
@@ -172,6 +176,7 @@ public class EnumerableInterpretable extends ConverterImpl
       throws CompileException, ClassNotFoundException, InvocationTargetException,
       InstantiationException, IllegalAccessException {
     compiler.cook(s);
+    // dcg: compile java code feynman.zhou
     return (Bindable<?>) compiler.getClassLoader()
         .loadClass(className)
         .getDeclaredConstructors()[0]
@@ -184,42 +189,52 @@ public class EnumerableInterpretable extends ConverterImpl
   static class StaticFieldDetector extends VisitorImpl<Void> {
     boolean containsStaticField = false;
 
-    @Override public Void visit(final FieldDeclaration fieldDeclaration) {
+    @Override
+    public Void visit(final FieldDeclaration fieldDeclaration) {
       containsStaticField |= (fieldDeclaration.modifier & Modifier.STATIC) != 0;
       return containsStaticField ? null : super.visit(fieldDeclaration);
     }
   }
 
-  /** Converts a bindable over scalar values into an array bindable, with each
-   * row as an array of 1 element. */
+  /**
+   * Converts a bindable over scalar values into an array bindable, with each
+   * row as an array of 1 element.
+   */
   static ArrayBindable box(final Bindable bindable) {
     if (bindable instanceof ArrayBindable) {
       return (ArrayBindable) bindable;
     }
     return new ArrayBindable() {
-      @Override public Class<Object[]> getElementType() {
+      @Override
+      public Class<Object[]> getElementType() {
         return Object[].class;
       }
 
-      @Override public Enumerable<@Nullable Object[]> bind(DataContext dataContext) {
+      @Override
+      public Enumerable<@Nullable Object[]> bind(DataContext dataContext) {
         final Enumerable<?> enumerable = bindable.bind(dataContext);
         return new AbstractEnumerable<@Nullable Object[]>() {
-          @Override public Enumerator<@Nullable Object[]> enumerator() {
+          @Override
+          public Enumerator<@Nullable Object[]> enumerator() {
             final Enumerator<?> enumerator = enumerable.enumerator();
             return new Enumerator<@Nullable Object[]>() {
-              @Override public @Nullable Object[] current() {
-                return new Object[] {enumerator.current()};
+              @Override
+              public @Nullable Object[] current() {
+                return new Object[]{enumerator.current()};
               }
 
-              @Override public boolean moveNext() {
+              @Override
+              public boolean moveNext() {
                 return enumerator.moveNext();
               }
 
-              @Override public void reset() {
+              @Override
+              public void reset() {
                 enumerator.reset();
               }
 
-              @Override public void close() {
+              @Override
+              public void close() {
                 enumerator.close();
               }
             };
@@ -229,9 +244,11 @@ public class EnumerableInterpretable extends ConverterImpl
     };
   }
 
-  /** Interpreter node that reads from an {@link Enumerable}.
+  /**
+   * Interpreter node that reads from an {@link Enumerable}.
    *
-   * <p>From the interpreter's perspective, it is a leaf node. */
+   * <p>From the interpreter's perspective, it is a leaf node.
+   */
   private static class EnumerableNode implements Node {
     private final Enumerable<@Nullable Object[]> enumerable;
     private final Sink sink;
@@ -242,7 +259,8 @@ public class EnumerableInterpretable extends ConverterImpl
       this.sink = compiler.sink(rel);
     }
 
-    @Override public void run() throws InterruptedException {
+    @Override
+    public void run() throws InterruptedException {
       final Enumerator<@Nullable Object[]> enumerator = enumerable.enumerator();
       while (enumerator.moveNext()) {
         @Nullable Object[] values = enumerator.current();

@@ -38,13 +38,14 @@ import static java.util.Objects.requireNonNull;
  * Helper class for building fluent parser tests such as
  * {@code sql("values 1").ok();}.
  */
+// sql parser fixture feynman.zhou
 public class SqlParserFixture {
-  public static final SqlTestFactory FACTORY =
-      SqlTestFactory.INSTANCE.withParserConfig(c ->
-          c.withQuoting(Quoting.DOUBLE_QUOTE)
-              .withUnquotedCasing(Casing.TO_UPPER)
-              .withQuotedCasing(Casing.UNCHANGED)
-              .withConformance(SqlConformanceEnum.DEFAULT));
+  public static final SqlTestFactory FACTORY = SqlTestFactory.INSTANCE.withParserConfig(c ->
+      c.withQuoting(Quoting.DOUBLE_QUOTE)
+          .withUnquotedCasing(Casing.TO_UPPER)
+          .withQuotedCasing(Casing.UNCHANGED)
+          .withConformance(SqlConformanceEnum.DEFAULT)
+  );
 
   public static final SqlParserFixture DEFAULT =
       new SqlParserFixture(FACTORY, StringAndPos.of("?"), false,

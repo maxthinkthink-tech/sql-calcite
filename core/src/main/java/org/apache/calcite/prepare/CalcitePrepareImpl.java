@@ -514,10 +514,8 @@ public class CalcitePrepareImpl implements CalcitePrepare {
         throw new AssertionError("factory returned null planner");
       }
       try {
-        CalcitePreparingStmt preparingStmt =
-            getPreparingStmt(context, elementType, catalogReader, planner);
-        return prepare2_(context, query, elementType, maxRowCount,
-            catalogReader, preparingStmt);
+        CalcitePreparingStmt preparingStmt = getPreparingStmt(context, elementType, catalogReader, planner);
+        return prepare2_(context, query, elementType, maxRowCount, catalogReader, preparingStmt);
       } catch (RelOptPlanner.CannotPlanException e) {
         exception = e;
       }
@@ -678,8 +676,7 @@ public class CalcitePrepareImpl implements CalcitePrepare {
       }
     } else if (query.queryable != null) {
       x = context.getTypeFactory().createType(elementType);
-      preparedResult =
-          preparingStmt.prepareQueryable(query.queryable, x);
+      preparedResult = preparingStmt.prepareQueryable(query.queryable, x);
       statementType = getStatementType(preparedResult);
     } else {
       assert query.rel != null;
@@ -1147,8 +1144,11 @@ public class CalcitePrepareImpl implements CalcitePrepare {
       RelDataType resultType = root.rel.getRowType();
       boolean isDml = root.kind.belongsTo(SqlKind.DML);
       final Bindable bindable;
+
       if (resultConvention == BindableConvention.INSTANCE) {
+        // dcg: interpreters
         bindable = Interpreters.bindable(root.rel);
+
       } else {
         EnumerableRel enumerable = (EnumerableRel) root.rel;
         if (!root.isRefTrivial()) {
@@ -1167,8 +1167,8 @@ public class CalcitePrepareImpl implements CalcitePrepare {
           CatalogReader.THREAD_LOCAL.set(catalogReader);
           final SqlConformance conformance = context.config().conformance();
           internalParameters.put("_conformance", conformance);
-          bindable =
-              EnumerableInterpretable.toBindable(internalParameters,
+          // dcg:bind feynman.zhou
+          bindable = EnumerableInterpretable.toBindable(internalParameters,
                   context.spark(), enumerable,
                   requireNonNull(prefer, "EnumerableRel.Prefer prefer"));
         } finally {

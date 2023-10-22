@@ -16,11 +16,14 @@
  */
 package org.apache.calcite.linq4j.tree;
 
-/** Parse tree node. */
+/**
+ * Parse tree node.
+ */
 public interface Node {
   <R> R accept(Visitor<R> visitor);
 
   Node accept(Shuttle shuttle);
 
+  // code generation feynman.zhou
   void accept(ExpressionWriter expressionWriter);
 }

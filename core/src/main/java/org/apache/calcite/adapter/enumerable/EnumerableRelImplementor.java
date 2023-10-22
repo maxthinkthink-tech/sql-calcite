@@ -107,11 +107,12 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
     return child.implement(this, prefer);
   }
 
-  public ClassDeclaration implementRoot(EnumerableRel rootRel,
-      EnumerableRel.Prefer prefer) {
+  public ClassDeclaration implementRoot(EnumerableRel rootRel, EnumerableRel.Prefer prefer) {
     EnumerableRel.Result result;
     try {
+      // dcg: get result feynman.zhou
       result = rootRel.implement(this, prefer);
+
     } catch (RuntimeException e) {
       IllegalStateException ex = new IllegalStateException("Unable to implement "
           + RelOptUtil.toString(rootRel, SqlExplainLevel.ALL_ATTRIBUTES));
@@ -127,9 +128,7 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
         for (Statement statement : result.block.statements) {
           if (statement instanceof GotoStatement) {
             final GotoStatement gotoStatement = (GotoStatement) statement;
-            e =
-                bb.append("v",
-                    requireNonNull(gotoStatement.expression, "expression"));
+            e = bb.append("v", requireNonNull(gotoStatement.expression, "expression"));
           } else {
             bb.add(statement);
           }
@@ -175,9 +174,9 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
         Expressions.methodDecl(Modifier.PUBLIC, Class.class,
             BuiltInMethod.TYPED_GET_ELEMENT_TYPE.method.getName(),
             ImmutableList.of(),
-            Blocks.toFunctionBlock(
-                Expressions.return_(null,
-                    Expressions.constant(result.physType.getJavaRowType())))));
+            Blocks.toFunctionBlock(Expressions.return_(null,
+                Expressions.constant(result.physType.getJavaRowType()))))
+    );
     return Expressions.classDecl(Modifier.PUBLIC,
         "Baz",
         null,
@@ -256,8 +255,8 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
       conditions.add(
           Primitive.is(field.getType())
               ? Expressions.equal(
-                  Expressions.field(thisParameter, field.getName()),
-                  Expressions.field(thatParameter, field.getName()))
+              Expressions.field(thisParameter, field.getName()),
+              Expressions.field(thatParameter, field.getName()))
               : Expressions.call(BuiltInMethod.OBJECTS_EQUAL.method,
                   Expressions.field(thisParameter, field.getName()),
                   Expressions.field(thatParameter, field.getName())));
@@ -426,7 +425,7 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
    *
    * @param input Value to be stashed
    * @param clazz Java class type of the value when it is used
-   * @param <T> Java class type of the value when it is used
+   * @param <T>   Java class type of the value when it is used
    * @return Expression that will represent {@code input} in runtime
    */
   public <T> Expression stash(T input, Class<? super T> clazz) {
@@ -483,12 +482,15 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
         block, physType, ((PhysTypeImpl) physType).format);
   }
 
-  @Override public SqlConformance getConformance() {
+  @Override
+  public SqlConformance getConformance() {
     return (SqlConformance) map.getOrDefault("_conformance",
         SqlConformanceEnum.DEFAULT);
   }
 
-  /** Visitor that finds types in an {@link Expression} tree. */
+  /**
+   * Visitor that finds types in an {@link Expression} tree.
+   */
   @VisibleForTesting
   static class TypeFinder extends VisitorImpl<Void> {
     private final Collection<Type> types;
@@ -497,14 +499,16 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
       this.types = types;
     }
 
-    @Override public Void visit(NewExpression newExpression) {
+    @Override
+    public Void visit(NewExpression newExpression) {
       types.add(newExpression.type);
       return super.visit(newExpression);
     }
 
-    @Override public Void visit(NewArrayExpression newArrayExpression) {
+    @Override
+    public Void visit(NewArrayExpression newArrayExpression) {
       Type type = newArrayExpression.type;
-      for (;;) {
+      for (; ; ) {
         final Type componentType = Types.getComponentType(type);
         if (componentType == null) {
           break;
@@ -515,7 +519,8 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
       return super.visit(newArrayExpression);
     }
 
-    @Override public Void visit(ConstantExpression constantExpression) {
+    @Override
+    public Void visit(ConstantExpression constantExpression) {
       final Object value = constantExpression.value;
       if (value instanceof Type) {
         types.add((Type) value);
@@ -528,7 +533,8 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
       return super.visit(constantExpression);
     }
 
-    @Override public Void visit(FunctionExpression functionExpression) {
+    @Override
+    public Void visit(FunctionExpression functionExpression) {
       final List<ParameterExpression> list = functionExpression.parameterList;
       for (ParameterExpression pe : list) {
         types.add(pe.getType());
@@ -540,7 +546,8 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
       return super.visit(functionExpression);
     }
 
-    @Override public Void visit(UnaryExpression unaryExpression) {
+    @Override
+    public Void visit(UnaryExpression unaryExpression) {
       if (unaryExpression.nodeType == ExpressionType.Convert) {
         types.add(unaryExpression.getType());
       }
@@ -548,7 +555,9 @@ public class EnumerableRelImplementor extends JavaRelImplementor {
     }
   }
 
-  /** Adds a declaration of each synthetic type found in a code block. */
+  /**
+   * Adds a declaration of each synthetic type found in a code block.
+   */
   private static class TypeRegistrar {
     private final List<MemberDeclaration> memberDeclarations;
     private final Set<Type> seen = new HashSet<>();

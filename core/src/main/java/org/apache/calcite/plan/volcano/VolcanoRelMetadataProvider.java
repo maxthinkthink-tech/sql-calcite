@@ -42,16 +42,19 @@ import static java.util.Objects.requireNonNull;
 public class VolcanoRelMetadataProvider implements RelMetadataProvider {
   //~ Methods ----------------------------------------------------------------
 
-  @Override public boolean equals(@Nullable Object obj) {
+  @Override
+  public boolean equals(@Nullable Object obj) {
     return obj instanceof VolcanoRelMetadataProvider;
   }
 
-  @Override public int hashCode() {
+  @Override
+  public int hashCode() {
     return 103;
   }
 
   @Deprecated // to be removed before 2.0
-  @Override public <@Nullable M extends @Nullable Metadata> @Nullable UnboundMetadata<M> apply(
+  @Override
+  public <@Nullable M extends @Nullable Metadata> @Nullable UnboundMetadata<M> apply(
       Class<? extends RelNode> relClass,
       final Class<? extends M> metadataClass) {
     if (relClass != RelSubset.class) {
@@ -123,13 +126,13 @@ public class VolcanoRelMetadataProvider implements RelMetadataProvider {
   }
 
   @Deprecated
-  @Override public <M extends Metadata> Multimap<Method, MetadataHandler<M>> handlers(
-      MetadataDef<M> def) {
+  @Override
+  public <M extends Metadata> Multimap<Method, MetadataHandler<M>> handlers(MetadataDef<M> def) {
     return ImmutableMultimap.of();
   }
 
-  @Override public List<MetadataHandler<?>> handlers(
-      Class<? extends MetadataHandler<?>> handlerClass) {
+  @Override
+  public List<MetadataHandler<?>> handlers(Class<? extends MetadataHandler<?>> handlerClass) {
     return ImmutableList.of();
   }
 }
